@@ -215,7 +215,7 @@ export function SettingsTab() {
         </CardHeader>
         <CardContent className="pt-6">
           <div className="space-y-4 max-w-2xl">
-            <div className="form-field">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="storeName">가게 이름</Label>
               <Input
                 id="storeName"
@@ -224,7 +224,7 @@ export function SettingsTab() {
                 placeholder="가게 이름"
               />
             </div>
-            <div className="form-field">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="storeAddress">주소</Label>
               <Input
                 id="storeAddress"
@@ -233,7 +233,7 @@ export function SettingsTab() {
                 placeholder="주소"
               />
             </div>
-            <div className="form-field">
+            <div className="flex flex-col gap-2">
               <Label htmlFor="storePhone">전화번호</Label>
               <Input
                 id="storePhone"
@@ -244,7 +244,7 @@ export function SettingsTab() {
             </div>
             <br></br>
             <Button
-              className="btn-action"
+              className="bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed"
               onClick={handleSaveStore}
               disabled={saving}
             >
@@ -274,7 +274,7 @@ export function SettingsTab() {
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="btn-action">
+                <Button className="bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed">
                   <Plus className="w-4 h-4 mr-2" />
                   직원 추가
                 </Button>
@@ -285,7 +285,7 @@ export function SettingsTab() {
                   <DialogDescription>새로운 직원의 정보를 입력해주세요.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="empName">이름</Label>
                     <Input
                       id="empName"
@@ -294,7 +294,7 @@ export function SettingsTab() {
                       placeholder="이름 입력"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="empRole">직책</Label>
                     <Input
                       id="empRole"
@@ -303,7 +303,7 @@ export function SettingsTab() {
                       placeholder="예: 매니저, 직원"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="empPhone">전화번호</Label>
                     <Input
                       id="empPhone"
@@ -315,7 +315,7 @@ export function SettingsTab() {
                   <br></br>
                   <Button
                     onClick={handleAddEmployee}
-                    className="w-full btn-action"
+                    className="w-full bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed"
                     disabled={adding}
                   >
                     {adding ? (
@@ -339,7 +339,7 @@ export function SettingsTab() {
                   <DialogDescription>직원의 정보를 수정해주세요.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="editEmpName">이름</Label>
                     <Input
                       id="editEmpName"
@@ -348,7 +348,7 @@ export function SettingsTab() {
                       placeholder="이름 입력"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="editEmpRole">직책</Label>
                     <Input
                       id="editEmpRole"
@@ -357,7 +357,7 @@ export function SettingsTab() {
                       placeholder="예: 매니저, 직원"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="editEmpPhone">전화번호</Label>
                     <Input
                       id="editEmpPhone"
@@ -369,7 +369,7 @@ export function SettingsTab() {
                   <br></br>
                   <Button
                     onClick={handleUpdateEmployee}
-                    className="w-full btn-action"
+                    className="w-full bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed"
                     disabled={editing}
                   >
                     {editing ? (
@@ -391,7 +391,7 @@ export function SettingsTab() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-50 hover:bg-gray-50">
-                  <TableHead className="table-cell-first text-center">이름</TableHead>
+                  <TableHead className="pl-6 text-center">이름</TableHead>
                   <TableHead className="text-center">직책</TableHead>
                   <TableHead className="text-center">전화번호</TableHead>
                   <TableHead className="text-center">상태</TableHead>
@@ -416,7 +416,7 @@ export function SettingsTab() {
                 ) : (
                   employees.map((employee) => (
                     <TableRow key={employee.id} className="hover:bg-gray-50/50">
-                      <TableCell className="table-cell-first text-center">{employee.name}</TableCell>
+                      <TableCell className="pl-6 text-center">{employee.name}</TableCell>
                       <TableCell className="text-center">
                         <Badge variant="outline" className="border-gray-300 text-gray-800">
                           {employee.role}
@@ -475,8 +475,8 @@ export function SettingsTab() {
             </div>
           ) : notifications ? (
             <div className="space-y-4 max-w-2xl">
-              <div className="notification-item">
-                <div className="notification-item-content">
+              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+                <div className="flex-1">
                   <p className="text-gray-800">재고 부족 알림</p>
                   <p className="text-gray-600">재고가 최소 수량 아래로 내려가면 알림을 보내드립니다</p>
                 </div>
@@ -486,8 +486,8 @@ export function SettingsTab() {
                 />
               </div>
               <Separator />
-              <div className="notification-item">
-                <div className="notification-item-content">
+              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+                <div className="flex-1">
                   <p className="text-gray-800">품절 알림</p>
                   <p className="text-gray-600">상품이 품절되면 즉시 알림을 보내드립니다</p>
                 </div>
@@ -497,8 +497,8 @@ export function SettingsTab() {
                 />
               </div>
               <Separator />
-              <div className="notification-item">
-                <div className="notification-item-content">
+              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+                <div className="flex-1">
                   <p className="text-gray-800">발주 알림</p>
                   <p className="text-gray-600">자동 발주 추천 시점이 되면 알림을 보내드립니다</p>
                 </div>
@@ -508,8 +508,8 @@ export function SettingsTab() {
                 />
               </div>
               <Separator />
-              <div className="notification-item">
-                <div className="notification-item-content">
+              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+                <div className="flex-1">
                   <p className="text-gray-800">일일 리포트</p>
                   <p className="text-gray-600">매일 재고 현황 리포트를 보내드립니다</p>
                 </div>

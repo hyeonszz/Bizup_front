@@ -64,7 +64,7 @@ export function OutOfStockTab() {
   return (
     <div className="space-y-6">
       <Card className="border-red-100 shadow-md">
-        <CardHeader className="card-header-grey">
+        <CardHeader className="bg-white border-b border-gray-300 pt-6 pb-6">
           <CardTitle className="text-red-700 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" />
             품절 상품 관리          </CardTitle>
@@ -105,7 +105,7 @@ export function OutOfStockTab() {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-red-50 hover:bg-red-50">
-                      <TableHead className="table-cell-first text-center">상품명</TableHead>
+                      <TableHead className="pl-6 text-center">상품명</TableHead>
                       <TableHead className="text-center">카테고리</TableHead>
                       <TableHead className="text-center">품절 기간</TableHead>
                       <TableHead className="text-center">마지막 재고</TableHead>
@@ -131,7 +131,7 @@ export function OutOfStockTab() {
                     ) : (
                       outOfStockItems.map((item) => (
                         <TableRow key={item.id} className="hover:bg-red-50/50">
-                          <TableCell className="table-cell-first text-center">{item.name}</TableCell>
+                          <TableCell className="pl-6 text-center">{item.name}</TableCell>
                           <TableCell className="text-center">
                             <Badge variant="outline" className="border-gray-300 text-gray-800">
                               {item.category}
@@ -153,7 +153,7 @@ export function OutOfStockTab() {
                           <TableCell className="text-center">
                             <Button
                               size="sm"
-                              className="btn-restock"
+                              className="bg-red-50 text-red-600 border-none cursor-pointer transition-all duration-200 font-medium hover:bg-red-200"
                               onClick={() => handleRestock(item.id)}
                               disabled={restocking === item.id}
                             >
@@ -189,27 +189,27 @@ export function OutOfStockTab() {
       {/* Prevention Tips */}
       <Card className="border-gray-200 bg-gradient-to-r from-gray-50 to-white">
         <CardHeader>
-          <CardTitle className="card-title-primary">
-            <CheckCircle className="icon-card-title" />
+          <CardTitle className="text-gray-800 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
             품절 방지 권장 사항
           </CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="space-y-2 text-gray-700">
-          <li className="tips-item">
-          <span className="tips-bullet">•</span>
+          <li className="flex items-center gap-2">
+          <span className="text-gray-700">•</span>
               <span>최소 재고량을 미리 설정하여 품절을 예방하세요.</span>
             </li>
-            <li className="tips-item">
-              <span className="tips-bullet">•</span>
+            <li className="flex items-center gap-2">
+              <span className="text-gray-700">•</span>
               <span>판매 패턴을 분석하여 인기 상품을 재고에 보관하세요.</span>
             </li>
-            <li className="tips-item">
-              <span className="tips-bullet">•</span>
+            <li className="flex items-center gap-2">
+              <span className="text-gray-700">•</span>
               <span>정기적인 상품은 미리 발주하는 방식이 효율적입니다.</span>
             </li>
-            <li className="tips-item">
-              <span className="tips-bullet">•</span>
+            <li className="flex items-center gap-2">
+              <span className="text-gray-700">•</span>
               <span>계절상품이나 이벤트 상품은 미리 발주 계획을 세우세요.</span>
             </li>
           </ul>

@@ -16,8 +16,8 @@ export default function App() {
         <div className="container mx-auto px-4 py-6 max-w-7xl">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="page-title">Bizup 가게 운영 관리 시스템</h1>
-            <p className="page-description">재고부터 발주까지, 스마트하게 관리하세요</p>
+            <h1 className="text-gray-900 font-bold text-4xl mb-2 pl-4">Bizup 가게 운영 관리 시스템</h1>
+            <p className="text-gray-500 text-lg mb-6 pl-4">재고부터 발주까지, 스마트하게 관리하세요</p>
           </div>
 
           {/* Main Tabs */}
@@ -25,7 +25,7 @@ export default function App() {
             <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm h-auto p-1">
               <TabsTrigger 
                 value="inventory" 
-                className="main-tab-trigger"
+                className="flex items-center gap-2 p-3 transition-all duration-200 text-gray-800 font-medium bg-transparent hover:text-gray-900 data-[state=active]:bg-gray-50 data-[state=active]:font-semibold"
               >
                 <Package className="w-4 h-4" />
                 <span className="hidden sm:inline">재고 관리</span>
@@ -33,7 +33,7 @@ export default function App() {
               </TabsTrigger>
               <TabsTrigger 
                 value="order" 
-                className="main-tab-trigger"
+                className="flex items-center gap-2 p-3 transition-all duration-200 text-gray-800 font-medium bg-transparent hover:text-gray-900 data-[state=active]:bg-gray-50 data-[state=active]:font-semibold"
               >
                 <TrendingUp className="w-4 h-4" />
                 <span className="hidden sm:inline">발주 추천</span>
@@ -41,7 +41,7 @@ export default function App() {
               </TabsTrigger>
               <TabsTrigger 
                 value="outofstock" 
-                className="main-tab-trigger"
+                className="flex items-center gap-2 p-3 transition-all duration-200 text-gray-800 font-medium bg-transparent hover:text-gray-900 data-[state=active]:bg-gray-50 data-[state=active]:font-semibold"
               >
                 <AlertTriangle className="w-4 h-4" />
                 <span className="hidden sm:inline">품절 관리</span>
@@ -49,7 +49,7 @@ export default function App() {
               </TabsTrigger>
               <TabsTrigger 
                 value="settings" 
-                className="main-tab-trigger"
+                className="flex items-center gap-2 p-3 transition-all duration-200 text-gray-800 font-medium bg-transparent hover:text-gray-900 data-[state=active]:bg-gray-50 data-[state=active]:font-semibold"
               >
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">설정</span>

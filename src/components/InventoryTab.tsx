@@ -173,7 +173,7 @@ export function InventoryTab() {
         <CardHeader className="bg-gradient-to-r from-gray-50 to-white border-b border-gray-200">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="card-title-primary flex items-center mb-6">
+              <CardTitle className="text-gray-800 flex items-center mb-6">
                 <Package className="w-5 h-5" />
                 재고 관리
               </CardTitle>              
@@ -181,7 +181,7 @@ export function InventoryTab() {
             </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="btn-action">
+                <Button className="bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed">
                   <Plus className="w-4 h-4 mr-2" />
                   재고 추가
                 </Button>
@@ -192,7 +192,7 @@ export function InventoryTab() {
                   <DialogDescription>새로운 상품의 재고 정보를 입력해주세요.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="name">상품명</Label>
                     <Input
                       id="name"
@@ -201,7 +201,7 @@ export function InventoryTab() {
                       placeholder="상품명 입력"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="category">카테고리</Label>
                     <Input
                       id="category"
@@ -211,7 +211,7 @@ export function InventoryTab() {
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="quantity">현재 수량</Label>
                       <Input
                         id="quantity"
@@ -220,7 +220,7 @@ export function InventoryTab() {
                         onChange={(e) => setNewItem({ ...newItem, quantity: Number(e.target.value) })}
                       />
                     </div>
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="unit">단위</Label>
                       <Input
                         id="unit"
@@ -231,7 +231,7 @@ export function InventoryTab() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="minQuantity">최소 수량</Label>
                       <Input
                         id="minQuantity"
@@ -240,7 +240,7 @@ export function InventoryTab() {
                         onChange={(e) => setNewItem({ ...newItem, minQuantity: Number(e.target.value) })}
                       />
                     </div>
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="price">가격 (원)</Label>
                       <Input
                         id="price"
@@ -253,7 +253,7 @@ export function InventoryTab() {
                   <br></br>
                   <Button 
                     onClick={handleAddItem} 
-                    className="w-full btn-action"
+                    className="w-full bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed"
                     disabled={adding}
                   >
                     {adding ? (
@@ -277,7 +277,7 @@ export function InventoryTab() {
                   <DialogDescription>재고 정보를 수정해주세요.</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 mt-4">
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="editName">상품명</Label>
                     <Input
                       id="editName"
@@ -286,7 +286,7 @@ export function InventoryTab() {
                       placeholder="상품명 입력"
                     />
                   </div>
-                  <div className="form-field">
+                  <div className="flex flex-col gap-2">
                     <Label htmlFor="editCategory">카테고리</Label>
                     <Input
                       id="editCategory"
@@ -296,7 +296,7 @@ export function InventoryTab() {
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="editQuantity">현재 수량</Label>
                       <Input
                         id="editQuantity"
@@ -305,7 +305,7 @@ export function InventoryTab() {
                         onChange={(e) => setEditItem({ ...editItem, quantity: Number(e.target.value) })}
                       />
                     </div>
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="editUnit">단위</Label>
                       <Input
                         id="editUnit"
@@ -316,7 +316,7 @@ export function InventoryTab() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="editMinQuantity">최소 수량</Label>
                       <Input
                         id="editMinQuantity"
@@ -325,7 +325,7 @@ export function InventoryTab() {
                         onChange={(e) => setEditItem({ ...editItem, minQuantity: Number(e.target.value) })}
                       />
                     </div>
-                    <div className="form-field">
+                    <div className="flex flex-col gap-2">
                       <Label htmlFor="editPrice">가격 (원)</Label>
                       <Input
                         id="editPrice"
@@ -337,7 +337,7 @@ export function InventoryTab() {
                   </div>
                   <Button 
                     onClick={handleUpdateItem} 
-                    className="w-full btn-action"
+                    className="w-full bg-gray-200 text-black border-none cursor-pointer transition-all duration-200 font-medium hover:bg-gray-300 disabled:bg-gray-200 disabled:text-white disabled:opacity-60 disabled:cursor-not-allowed"
                     disabled={editing}
                   >
                     {editing ? (
@@ -393,7 +393,7 @@ export function InventoryTab() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-50 hover:bg-gray-50">
-                  <TableHead className="table-cell-first text-center">상품명</TableHead>
+                  <TableHead className="pl-6 text-center">상품명</TableHead>
                   <TableHead className="text-center">카테고리</TableHead>
                   <TableHead className="text-center">현재 수량</TableHead>
                   <TableHead className="text-center">최소 수량</TableHead>
@@ -422,7 +422,7 @@ export function InventoryTab() {
                     const status = getStockStatus(item.quantity, item.min_quantity);
                     return (
                       <TableRow key={item.id} className="hover:bg-gray-50/50">
-                        <TableCell className="table-cell-first text-center">{item.name}</TableCell>
+                        <TableCell className="pl-6 text-center">{item.name}</TableCell>
                         <TableCell className="text-center">
                           <Badge variant="outline" className="border-gray-300 text-gray-800">
                             {item.category}
@@ -439,9 +439,9 @@ export function InventoryTab() {
                           <Badge 
                             variant={status.variant}
                             className={
-                              status.text === '정상' ? 'badge-stock-normal' :
-                              status.text === '부족' ? 'badge-stock-low' :
-                              'badge-stock-out'
+                              status.text === '정상' ? 'bg-green-200 text-green-800 border-none' :
+                              status.text === '부족' ? 'bg-yellow-100 text-yellow-600 border-none' :
+                              'bg-red-200 text-red-600 border-none'
                             }
                           >
                             {status.text}

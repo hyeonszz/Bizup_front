@@ -29,7 +29,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
   const refreshInterval = 5000; // 5초마다 새로고침
   const [highlightedItems, setHighlightedItems] = useState<Set<number>>(new Set()); // 깜빡이는 항목들
   const [needsSetup, setNeedsSetup] = useState(false);
-  const [hasShownSetupToast, setHasShownSetupToast] = useState(false);
   const [autoRefreshLocked, setAutoRefreshLocked] = useState(false);
 
   const sanitizedCategories = inventory
@@ -190,10 +189,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
     setNeedsSetup(requiresSetup);
 
     if (requiresSetup) {
-      if (!hasShownSetupToast) {
-        toast.info('초기화할 때는 카테고리, 현재 수량, 최소 수량, 단위, 가격을 입력해주세요!');
-        setHasShownSetupToast(true);
-      }
       if (autoRefresh) {
         setAutoRefresh(false);
       }
@@ -205,9 +200,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
         setAutoRefresh(true);
         setAutoRefreshLocked(false);
         toast.success('모든 항목이 초기화되었어요. 실시간 재고 반영을 시작합니다.');
-      }
-      if (hasShownSetupToast) {
-        setHasShownSetupToast(false);
       }
     }
 
@@ -395,13 +387,16 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
+                if (autoRefreshLocked) {
+                  toast.info('초기화를 먼저 완료해 주세요!');
+                  return;
+                }
                 setAutoRefresh(!autoRefresh);
                 if (!autoRefresh) {
                   loadInventory();
                   loadStats();
                 }
               }}
-              disabled={autoRefreshLocked}
               className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors border"
               style={{ 
                 backgroundColor: autoRefresh ? '#f0f9ff' : '#ffffff',

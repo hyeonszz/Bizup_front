@@ -115,7 +115,17 @@ export interface InventoryStats {
 }
 
 export const inventoryApi = {
-  getAll: (search?: string) => api.get<InventoryItem[]>(`/inventory`, { search: search || '' }),
+  getAll: (search?: string) => {
+    const params: Record<string, string | number> = {
+      limit: 1000,  // 모든 재고 조회
+      skip: 0
+    };
+    // search가 실제로 값이 있을 때만 파라미터에 추가
+    if (search && search.trim()) {
+      params.search = search.trim();
+    }
+    return api.get<InventoryItem[]>(`/inventory`, params);
+  },
   getStats: () => api.get<InventoryStats>('/inventory/stats'),
   getById: (id: number) => api.get<InventoryItem>(`/inventory/${id}`),
   create: (data: InventoryItemCreate) => api.post<InventoryItem>('/inventory', data),

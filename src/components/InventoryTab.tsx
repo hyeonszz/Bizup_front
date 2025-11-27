@@ -2,7 +2,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Plus, Search, Edit2, Loader2, Trash2 } from 'lucide-react';
+import { Plus, Search, Edit2, Loader2, Trash2, RefreshCw, Pause, Play } from 'lucide-react';
 import { inventoryApi, InventoryItem, InventoryStats } from '../lib/api';
 import { toast } from 'sonner';
 
@@ -16,6 +16,9 @@ export function InventoryTab() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true); // 자동 새로고침 활성화
+  const [refreshInterval, setRefreshInterval] = useState(5000); // 5초마다 새로고침
+  const [highlightedItems, setHighlightedItems] = useState<Set<number>>(new Set()); // 깜빡이는 항목들
 
   const [newItem, setNewItem] = useState({
     name: '',
@@ -39,11 +42,82 @@ export function InventoryTab() {
     loadStats();
   }, []);
 
-  // 검색어 변경 시 재고 목록 다시 로딩
+  // 실시간 재고 자동 새로고침
   useEffect(() => {
-    if (searchQuery !== undefined) {
-      loadInventory();
+    if (!autoRefresh) return;
+
+    const interval = setInterval(() => {
+      // 조용히 새로고침 (로딩 표시 없이)
+      loadInventorySilently();
+      loadStats();
+    }, refreshInterval);
+
+    return () => clearInterval(interval);
+  }, [autoRefresh, refreshInterval]);
+
+  // 조용한 새로고침 (로딩 표시 없이)
+  const loadInventorySilently = async () => {
+    try {
+      // searchQuery가 빈 문자열이거나 공백만 있으면 undefined로 전달
+      const search = searchQuery?.trim() || undefined;
+      const data = await inventoryApi.getAll(search);
+      
+      // 재고 변화 감지 및 알림
+      const previousInventory = inventory;
+      const newHighlightedItems = new Set<number>();
+      
+      if (previousInventory.length > 0) {
+        data.forEach((newItem) => {
+          const oldItem = previousInventory.find((item) => item.id === newItem.id);
+          if (oldItem) {
+            // 재고가 감소한 경우
+            if (newItem.quantity < oldItem.quantity) {
+              // 깜빡임 효과를 위한 하이라이트 추가
+              newHighlightedItems.add(newItem.id);
+              
+              // 부족 상태로 변경된 경우
+              if (oldItem.quantity > oldItem.min_quantity && newItem.quantity <= newItem.min_quantity) {
+                toast.warning(`⚠️ ${newItem.name} 재고가 부족합니다! (${newItem.quantity}${newItem.unit} 남음)`);
+              }
+              // 품절된 경우
+              if (oldItem.quantity > 0 && newItem.quantity === 0) {
+                toast.error(`🚨 ${newItem.name} 재고가 품절되었습니다!`);
+              }
+            }
+          }
+        });
+      }
+      
+      // 하이라이트된 항목들 업데이트
+      if (newHighlightedItems.size > 0) {
+        setHighlightedItems(newHighlightedItems);
+        
+        // 2초 후 하이라이트 제거
+        setTimeout(() => {
+          setHighlightedItems((prev) => {
+            const updated = new Set(prev);
+            newHighlightedItems.forEach((id) => updated.delete(id));
+            return updated;
+          });
+        }, 2000);
+      }
+      
+      setInventory(data);
+    } catch (error) {
+      console.error('재고 목록 자동 새로고침 오류:', error);
+      // 조용한 새로고침이므로 에러 토스트는 표시하지 않음
     }
+  };
+
+  // 검색어 변경 시 재고 목록 다시 로딩 (디바운싱)
+  useEffect(() => {
+    if (searchQuery === undefined) return;
+    
+    const timeoutId = setTimeout(() => {
+      loadInventory();
+    }, 300); // 300ms 디바운싱
+    
+    return () => clearTimeout(timeoutId);
   }, [searchQuery]);
 
   // 다이얼로그 열림 시 폼 데이터 초기화
@@ -62,7 +136,11 @@ export function InventoryTab() {
   const loadInventory = async () => {
     try {
       setLoading(true);
-      const data = await inventoryApi.getAll(searchQuery || undefined);
+      // searchQuery가 빈 문자열이거나 공백만 있으면 undefined로 전달
+      const search = searchQuery?.trim() || undefined;
+      const data = await inventoryApi.getAll(search);
+      console.log('재고 목록 로드됨:', data.length, '개', search ? `(검색: "${search}")` : '(전체)');
+      console.log('재고 항목들:', data.map(item => `${item.name} (${item.category})`).slice(0, 10));
       setInventory(data);
     } catch (error) {
       console.error('재고 목록 로딩 오류:', error);
@@ -177,37 +255,104 @@ export function InventoryTab() {
   };
 
   return (
-    <div 
-      className="-mx-6 -mt-6 -mb-6" 
-      style={{ 
-        backgroundColor: '#f3f5f7', 
-        width: '100vw',
-        marginLeft: 'calc(-50vw + 50%)',
-        marginRight: 'calc(-50vw + 50%)',
-        minHeight: '100vh',
-        paddingTop: '1.5rem',
-        paddingBottom: '1.5rem'
-      }}
-    >
+    <>
+      <style>{`
+        @keyframes inventoryFlash {
+          0% {
+            background-color: #e0f2fe;
+          }
+          50% {
+            background-color: #bae6fd;
+          }
+          100% {
+            background-color: transparent;
+          }
+        }
+        
+        .inventory-highlight {
+          animation: inventoryFlash 0.6s ease-in-out 3;
+        }
+      `}</style>
+      <div 
+        className="-mx-6 -mt-6 -mb-6" 
+        style={{ 
+          backgroundColor: '#f3f5f7', 
+          width: '100vw',
+          marginLeft: 'calc(-50vw + 50%)',
+          marginRight: 'calc(-50vw + 50%)',
+          minHeight: '100vh',
+          paddingTop: '1.5rem',
+          paddingBottom: '1.5rem'
+        }}
+      >
       <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)' }} >
         <div className="flex items-center justify-between gap-4" style={{ marginBottom: '45px' }}>
           <div>
             <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>재고 현황</h2>
+            {autoRefresh && (
+              <p className="text-sm text-gray-500 mt-1" style={{ marginLeft: '5px' }}>
+                🔄 실시간 업데이트 중... ({refreshInterval / 1000}초마다)
+              </p>
+            )}
           </div>
-          <button
-            onClick={() => setIsDialogOpen(true)}
-            className="flex items-center justify-center gap-3 text-white rounded-full transition-colors"
-            style={{ backgroundColor: '#3182f6', fontSize: '18px', padding: '14px 28px', fontWeight: 600 }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#2563eb';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#3182f6';
-            }}
-          >
-            <Plus className="w-6 h-6" />
-            재고 추가
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => {
+                setAutoRefresh(!autoRefresh);
+                if (!autoRefresh) {
+                  loadInventory();
+                  loadStats();
+                }
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors border"
+              style={{ 
+                backgroundColor: autoRefresh ? '#f0f9ff' : '#ffffff',
+                borderColor: autoRefresh ? '#3182f6' : '#e5e7eb',
+                color: autoRefresh ? '#3182f6' : '#6b7280',
+                fontSize: '14px'
+              }}
+              title={autoRefresh ? '자동 새로고침 중지' : '자동 새로고침 시작'}
+            >
+              {autoRefresh ? (
+                <>
+                  <Pause className="w-4 h-4" />
+                  <span>일시정지</span>
+                </>
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  <span>시작</span>
+                </>
+              )}
+            </button>
+            <button
+              onClick={() => {
+                loadInventory();
+                loadStats();
+                toast.success('재고를 새로고침했습니다.');
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg transition-colors border border-gray-300 hover:bg-gray-50"
+              style={{ fontSize: '14px' }}
+              title="지금 새로고침"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>새로고침</span>
+            </button>
+            <button
+              onClick={() => setIsDialogOpen(true)}
+              className="flex items-center justify-center gap-3 text-white rounded-full transition-colors"
+              style={{ backgroundColor: '#3182f6', fontSize: '18px', padding: '14px 28px', fontWeight: 600 }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#3182f6';
+              }}
+            >
+              <Plus className="w-6 h-6" />
+              재고 추가
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 flex-1" style={{ minHeight: 'calc(100vh - 200px)', marginTop: '2px' }} >
@@ -306,10 +451,14 @@ export function InventoryTab() {
                       statusColor = 'text-orange-600 bg-orange-50';
                     }
 
+                    const isHighlighted = highlightedItems.has(item.id);
+
                     return (
                       <tr
                         key={item.id}
-                        className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
+                        className={`border-b border-gray-50 hover:bg-gray-50/50 transition-colors ${
+                          isHighlighted ? 'inventory-highlight' : ''
+                        }`}
                       >
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-600">{item.category}</td>
@@ -559,5 +708,6 @@ export function InventoryTab() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

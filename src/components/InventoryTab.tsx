@@ -27,7 +27,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
   const [editing, setEditing] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true); // 자동 새로고침 활성화
   const refreshInterval = 5000; // 5초마다 새로고침
-  const [highlightedItems, setHighlightedItems] = useState<Set<number>>(new Set()); // 깜빡이는 항목들
   const [needsSetup, setNeedsSetup] = useState(false);
   const [autoRefreshLocked, setAutoRefreshLocked] = useState(false);
 
@@ -83,15 +82,12 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
       const data = await inventoryApi.getAll(search);
 
       const requiresSetup = handleSetupGuard(data);
-      const newHighlightedItems = new Set<number>();
 
       if (!requiresSetup && previousInventory.length > 0) {
         data.forEach((newItem) => {
           const oldItem = previousInventory.find((item) => item.id === newItem.id);
           if (oldItem) {
             if (newItem.quantity < oldItem.quantity) {
-              newHighlightedItems.add(newItem.id);
-
               if (oldItem.quantity > oldItem.min_quantity && newItem.quantity <= newItem.min_quantity) {
                 toast.warning(`${newItem.name} 재고가 부족합니다! (${newItem.quantity}${newItem.unit} 남음)`);
               }
@@ -101,20 +97,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
             }
           }
         });
-      } else if (requiresSetup && highlightedItems.size > 0) {
-        setHighlightedItems(new Set());
-      }
-      
-      if (!requiresSetup && newHighlightedItems.size > 0) {
-        setHighlightedItems(newHighlightedItems);
-        
-        setTimeout(() => {
-          setHighlightedItems((prev) => {
-            const updated = new Set(prev);
-            newHighlightedItems.forEach((id) => updated.delete(id));
-            return updated;
-          });
-        }, 2000);
       }
       
       setInventory(data);
@@ -337,24 +319,6 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
   };
 
   return (
-    <>
-      <style>{`
-        @keyframes inventoryFlash {
-          0% {
-            background-color: #e0f2fe;
-          }
-          50% {
-            background-color: #bae6fd;
-          }
-          100% {
-            background-color: transparent;
-          }
-        }
-        
-        .inventory-highlight {
-          animation: inventoryFlash 0.6s ease-in-out 3;
-        }
-      `}</style>
       <div 
         id="inventory-tab"
         className="-mx-6 -mt-6 -mb-6" 
@@ -406,7 +370,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
               }}
               title={
                 autoRefreshLocked
-                  ? '필수 정보를 입력하면 자동으로 재개돼요.'
+                  ? '초기화를 먼저 완료해 주세요.'
                   : autoRefresh
                     ? '자동 새로고침 중지'
                     : '자동 새로고침 시작'
@@ -630,7 +594,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                     let status = '정상';
                     let statusColor = 'text-green-600 bg-green-50';
                     if (placeholderItem) {
-                      status = '초기화 필요';
+                      status = '-';
                       statusColor = 'text-sky-700 bg-sky-50';
                     } else if (isOutOfStock) {
                       status = '품절';
@@ -641,30 +605,23 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                     }
 
                     const displayCategory = item.category === '-' ? '-' : item.category || '-';
-                    const displayQuantity = placeholderItem
-                      ? '-'
-                      : `${item.quantity}${item.unit ? ` ${item.unit}` : ''}`;
-                    const displayMinQuantity = placeholderItem
-                      ? '-'
-                      : `${item.min_quantity}${item.unit ? ` ${item.unit}` : ''}`;
+                    const quantityText = placeholderItem ? '-' : item.quantity.toString();
+                    const minQuantityText = placeholderItem ? '-' : item.min_quantity.toString();
+                    const unitSuffix = !placeholderItem && item.unit ? ` ${item.unit}` : '';
                     const displayPrice = placeholderItem ? '-' : `₩${item.price.toLocaleString()}`;
-
-                    const isHighlighted = highlightedItems.has(item.id);
 
                     return (
                       <tr
                         key={item.id}
-                        className={`border-b border-gray-50 hover:bg-gray-50/50 transition-colors ${
-                          isHighlighted ? 'inventory-highlight' : ''
-                        }`}
+                        className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors"
                       >
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-600">{displayCategory}</td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">
-                          {displayQuantity}
+                          {quantityText}{unitSuffix}
                         </td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-600">
-                          {displayMinQuantity}
+                          {minQuantityText}{unitSuffix}
                         </td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">
                           {displayPrice}
@@ -725,7 +682,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                 id="name"
                 value={newItem.name}
                 onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                placeholder="예: 노트북 스탠드"
+                placeholder="예: 원두두"
                 required
                 className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
               />
@@ -736,7 +693,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                 id="category"
                 value={newItem.category}
                 onChange={(e) => setNewItem({ ...newItem, category: e.target.value })}
-                placeholder="예: 사무용품"
+                placeholder="예: 필수 재료"
                 required
                 className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
               />
@@ -834,7 +791,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                 id="editName"
                 value={editItem.name}
                 onChange={(e) => setEditItem({ ...editItem, name: e.target.value })}
-                placeholder="예: 노트북 스탠드"
+                placeholder="예: 원두"
                 required
                 className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
               />
@@ -845,7 +802,7 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
                 id="editCategory"
                 value={editItem.category}
                 onChange={(e) => setEditItem({ ...editItem, category: e.target.value })}
-                placeholder="예: 사무용품"
+                placeholder="예: 필수 재료"
                 required
                 className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
               />
@@ -930,6 +887,5 @@ export function InventoryTab({ activeTab = 'inventory', onTabChange }: Inventory
         </DialogContent>
       </Dialog>
     </div>
-    </>
   );
 }

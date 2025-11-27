@@ -6,8 +6,14 @@ import { Upload, RefreshCw, Search, Loader2, FileText, CheckCircle, XCircle } fr
 import { menuApi, MenuItem } from '../lib/api';
 import { toast } from 'sonner';
 import { useDataLoader } from '../hooks/useDataLoader';
+import { TabNavigation } from './TabNavigation';
 
-export function MenuTab() {
+interface MenuTabProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export function MenuTab({ activeTab = 'menu', onTabChange }: MenuTabProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -125,6 +131,7 @@ export function MenuTab() {
 
   return (
     <div 
+      id="menu-tab"
       className="-mx-6 -mt-6 -mb-6" 
       style={{ 
         backgroundColor: '#f3f5f7', 
@@ -132,11 +139,12 @@ export function MenuTab() {
         marginLeft: 'calc(-50vw + 50%)',
         marginRight: 'calc(-50vw + 50%)',
         minHeight: '100vh',
-        paddingTop: '1.5rem',
+        paddingTop: '0',
         paddingBottom: '1.5rem'
       }}
     >
-      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)' }}>
+      {onTabChange && <TabNavigation activeTab={activeTab} onTabChange={onTabChange} tabId="menu-tab" />}
+      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)', paddingTop: '1.5rem' }}>
         <div className="flex items-center justify-between gap-4" style={{ marginBottom: '45px' }}>
           <div>
             <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>메뉴 관리</h2>

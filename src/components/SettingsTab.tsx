@@ -11,8 +11,14 @@ import { Switch } from './ui/switch';
 import { Separator } from './ui/separator';
 import { employeeApi, storeApi, Employee, NotificationSettings } from '../lib/api';
 import { toast } from 'sonner';
+import { TabNavigation } from './TabNavigation';
 
-export function SettingsTab() {
+interface SettingsTabProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export function SettingsTab({ activeTab = 'settings', onTabChange }: SettingsTabProps) {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [notifications, setNotifications] = useState<NotificationSettings | null>(null);
   const [loading, setLoading] = useState(true);
@@ -204,6 +210,7 @@ export function SettingsTab() {
 
   return (
     <div 
+      id="settings-tab"
       className="-mx-6 -mt-6 -mb-6" 
       style={{ 
         backgroundColor: '#f3f5f7', 
@@ -211,18 +218,19 @@ export function SettingsTab() {
         marginLeft: 'calc(-50vw + 50%)',
         marginRight: 'calc(-50vw + 50%)',
         minHeight: '100vh',
-        paddingTop: '1.5rem',
+        paddingTop: '0',
         paddingBottom: '1.5rem'
       }}
     >
-      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)' }}>
+      {onTabChange && <TabNavigation activeTab={activeTab} onTabChange={onTabChange} tabId="settings-tab" />}
+      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)', paddingTop: '1.5rem' }}>
         <div style={{ marginBottom: '45px' }}>
           <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>설정</h2>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 flex-1" style={{ minHeight: 'calc(100vh - 200px)', marginTop: '2px' }}>
           <div className="p-6">
       {/* Store Settings */}
-      <div className="pb-6 border-b" style={{ borderColor: '#c7d7ff', marginLeft: '1.5px' }}>
+      <div className="pb-6" style={{ marginLeft: '1.5px' }}>
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <StoreIcon className="w-5 h-5" />
@@ -230,6 +238,17 @@ export function SettingsTab() {
           </h3>
           <p className="text-sm text-gray-600 mt-1">가게 정보를 업데이트하고 최신 상태로 유지해 보세요.</p>
         </div>
+        {/* 파란 선 - 흰색 배경 양끝까지 */}
+        <div 
+          className="mb-6" 
+          style={{ 
+            height: '1px', 
+            backgroundColor: '#c7d7ff',
+            marginLeft: 'calc(-1.5rem - 1.5px)',
+            marginRight: '-1.5rem',
+            width: 'calc(100% + 3rem + 1.5px)'
+          }}
+        />
         <div className="space-y-4 max-w-2xl">
           <div className="flex flex-col gap-2">
             <Label htmlFor="storeName">가게 이름</Label>
@@ -280,8 +299,8 @@ export function SettingsTab() {
       </div>
 
       {/* Employee Management */}
-      <div className="py-6 border-b" style={{ borderColor: '#c7d7ff', marginLeft: '1.5px' }}>
-        <div className="flex items-center justify-between mb-4">
+      <div className="py-6" style={{ marginLeft: '1.5px' }}>
+        <div className="flex items-start justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
               <Users className="w-5 h-5" />
@@ -289,6 +308,7 @@ export function SettingsTab() {
             </h3>
             <p className="text-sm text-gray-600 mt-1">직원 정보를 업데이트하고 연락처를 최신으로 유지해 주세요.</p>
           </div>
+          <div className="flex-shrink-0" style={{ transform: 'translate(-5px, 6px)' }}>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -401,7 +421,19 @@ export function SettingsTab() {
                 </div>
               </DialogContent>
             </Dialog>
+          </div>
         </div>
+        {/* 파란 선 - 흰색 배경 양끝까지 */}
+        <div 
+          className="mb-6" 
+          style={{ 
+            height: '1px', 
+            backgroundColor: '#c7d7ff',
+            marginLeft: 'calc(-1.5rem - 1.5px)',
+            marginRight: '-1.5rem',
+            width: 'calc(100% + 3rem + 1.5px)'
+          }}
+        />
         <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
           <Table>
             <TableHeader>
@@ -481,6 +513,17 @@ export function SettingsTab() {
           </h3>
           <p className="text-sm text-gray-600 mt-1">꼭 필요한 순간에만 알림을 받아 보세요.</p>
         </div>
+        {/* 파란 선 - 흰색 배경 양끝까지 */}
+        <div 
+          className="mb-6" 
+          style={{ 
+            height: '1px', 
+            backgroundColor: '#c7d7ff',
+            marginLeft: 'calc(-1.5rem - 1.5px)',
+            marginRight: '-1.5rem',
+            width: 'calc(100% + 3rem + 1.5px)'
+          }}
+        />
         {loading ? (
           <div className="text-center py-8">
             <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#3182F6]" />
@@ -498,7 +541,7 @@ export function SettingsTab() {
                 onCheckedChange={(checked) => handleNotificationChange('low_stock', checked)}
               />
             </div>
-            <Separator />
+            <Separator style={{ backgroundColor: '#e5e7eb' }} />
             <div className="flex items-center justify-end pt-3 pb-3 gap-7">
               <div className="flex-1">
                 <p className="text-gray-800">품절 알림</p>
@@ -509,7 +552,7 @@ export function SettingsTab() {
                 onCheckedChange={(checked) => handleNotificationChange('out_of_stock', checked)}
               />
             </div>
-            <Separator />
+            <Separator style={{ backgroundColor: '#e5e7eb' }} />
             <div className="flex items-center justify-end pt-3 pb-3 gap-7">
               <div className="flex-1">
                 <p className="text-gray-800">발주 알림</p>
@@ -520,7 +563,7 @@ export function SettingsTab() {
                 onCheckedChange={(checked) => handleNotificationChange('order_reminder', checked)}
               />
             </div>
-            <Separator />
+            <Separator style={{ backgroundColor: '#e5e7eb' }} />
             <div className="flex items-center justify-end pt-3 pb-3 gap-7">
               <div className="flex-1">
                 <p className="text-gray-800">일일 리포트</p>

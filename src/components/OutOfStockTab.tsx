@@ -4,8 +4,14 @@ import { Badge } from './ui/badge';
 import { AlertCircle, Clock, RotateCcw, Loader2 } from 'lucide-react';
 import { outOfStockApi, OutOfStockItem } from '../lib/api';
 import { toast } from 'sonner';
+import { TabNavigation } from './TabNavigation';
 
-export function OutOfStockTab() {
+interface OutOfStockTabProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export function OutOfStockTab({ activeTab = 'outofstock', onTabChange }: OutOfStockTabProps) {
   const [outOfStockItems, setOutOfStockItems] = useState<OutOfStockItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [restocking, setRestocking] = useState<number | null>(null);
@@ -60,6 +66,7 @@ export function OutOfStockTab() {
 
   return (
     <div 
+      id="outofstock-tab"
       className="-mx-6 -mt-6 -mb-6" 
       style={{ 
         backgroundColor: '#f3f5f7', 
@@ -67,11 +74,12 @@ export function OutOfStockTab() {
         marginLeft: 'calc(-50vw + 50%)',
         marginRight: 'calc(-50vw + 50%)',
         minHeight: '100vh',
-        paddingTop: '1.5rem',
+        paddingTop: '0',
         paddingBottom: '1.5rem'
       }}
     >
-      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)' }}>
+      {onTabChange && <TabNavigation activeTab={activeTab} onTabChange={onTabChange} tabId="outofstock-tab" />}
+      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)', paddingTop: '1.5rem' }}>
         <div style={{ marginBottom: '45px' }}>
           <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>품절 현황</h2>
         </div>

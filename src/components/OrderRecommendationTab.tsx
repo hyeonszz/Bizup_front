@@ -7,8 +7,14 @@ import { ShoppingCart, TrendingUp, AlertCircle, CheckCircle, Loader2 } from 'luc
 import { Alert, AlertDescription } from './ui/alert';
 import { orderApi, OrderRecommendation } from '../lib/api';
 import { toast } from 'sonner';
+import { TabNavigation } from './TabNavigation';
 
-export function OrderRecommendationTab() {
+interface OrderRecommendationTabProps {
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export function OrderRecommendationTab({ activeTab = 'order', onTabChange }: OrderRecommendationTabProps) {
   const [recommendations, setRecommendations] = useState<OrderRecommendation[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +87,7 @@ export function OrderRecommendationTab() {
 
   return (
     <div 
+      id="order-tab"
       className="-mx-6 -mt-6 -mb-6" 
       style={{ 
         backgroundColor: '#f3f5f7', 
@@ -88,11 +95,12 @@ export function OrderRecommendationTab() {
         marginLeft: 'calc(-50vw + 50%)',
         marginRight: 'calc(-50vw + 50%)',
         minHeight: '100vh',
-        paddingTop: '1.5rem',
+        paddingTop: '0',
         paddingBottom: '1.5rem'
       }}
     >
-      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)' }}>
+      {onTabChange && <TabNavigation activeTab={activeTab} onTabChange={onTabChange} tabId="order-tab" />}
+      <div className="container mx-auto px-6 max-w-7xl flex flex-col" style={{ minHeight: 'calc(100vh - 3rem)', paddingTop: '1.5rem' }}>
         <div style={{ marginBottom: '45px' }}>
           <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>발주 추천</h2>
         </div>

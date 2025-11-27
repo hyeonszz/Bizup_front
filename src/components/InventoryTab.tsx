@@ -265,28 +265,28 @@ export function InventoryTab() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100" style={{ height: '50px' }}>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     상품명
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     카테고리
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     현재 수량
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     최소 수량
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     가격
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     상태
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     마지막 업데이트
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     관리
                   </th>
                 </tr>

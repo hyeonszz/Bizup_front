@@ -140,25 +140,25 @@ export function OrderRecommendationTab() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100" style={{ height: '50px' }}>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     상품명
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     현재 재고
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     평균 사용
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     추천 발주
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     예상 비용
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     우선순위
                   </th>
-                  <th className="text-center px-6 text-[19px] text-gray-600 font-medium">
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
                     예상 소진
                   </th>
                 </tr>

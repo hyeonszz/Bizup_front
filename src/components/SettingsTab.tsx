@@ -220,75 +220,75 @@ export function SettingsTab() {
           <h2 className="text-2xl font-medium text-gray-900" style={{ fontSize: '36px', marginLeft: '5px', marginTop: '6.5px' }}>설정</h2>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 flex-1" style={{ minHeight: 'calc(100vh - 200px)', marginTop: '2px' }}>
-          <div className="space-y-6 p-6">
+          <div className="p-6">
       {/* Store Settings */}
-      <Card className="border-[var(--border)] shadow-sm bg-white">
-        <CardHeader className="bg-white border-b border-[var(--border)]">
-          <CardTitle className="text-[var(--foreground)] flex items-center gap-2">
+      <div className="pb-6 border-b" style={{ borderColor: '#3182f6', marginLeft: '1.5px' }}>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <StoreIcon className="w-5 h-5" />
             가게 설정
-          </CardTitle>
-          <CardDescription>가게 정보를 업데이트하고 최신 상태로 유지해 보세요.</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="space-y-4 max-w-2xl">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="storeName">가게 이름</Label>
-              <Input
-                id="storeName"
-                value={storeForm.name}
-                onChange={(e) => setStoreForm({ ...storeForm, name: e.target.value })}
-                placeholder="가게 이름"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="storeAddress">주소</Label>
-              <Input
-                id="storeAddress"
-                value={storeForm.address}
-                onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
-                placeholder="주소"
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="storePhone">전화번호</Label>
-              <Input
-                id="storePhone"
-                value={storeForm.phone}
-                onChange={(e) => setStoreForm({ ...storeForm, phone: e.target.value })}
-                placeholder="전화번호"
-              />
-            </div>
-            <br></br>
-            <Button
-              onClick={handleSaveStore}
-              disabled={saving}
-              className="w-full sm:w-auto"
-            >
-              {saving ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  저장 중...
-                </>
-              ) : (
-                '저장하기'
-              )}
-            </Button>
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">가게 정보를 업데이트하고 최신 상태로 유지해 보세요.</p>
+        </div>
+        <div className="space-y-4 max-w-2xl">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="storeName">가게 이름</Label>
+            <Input
+              id="storeName"
+              value={storeForm.name}
+              onChange={(e) => setStoreForm({ ...storeForm, name: e.target.value })}
+              placeholder="가게 이름"
+              style={{ backgroundColor: '#f9fafb' }}
+            />
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="storeAddress">주소</Label>
+            <Input
+              id="storeAddress"
+              value={storeForm.address}
+              onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
+              placeholder="주소"
+              style={{ backgroundColor: '#f9fafb' }}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="storePhone">전화번호</Label>
+            <Input
+              id="storePhone"
+              value={storeForm.phone}
+              onChange={(e) => setStoreForm({ ...storeForm, phone: e.target.value })}
+              placeholder="전화번호"
+              style={{ backgroundColor: '#f9fafb' }}
+            />
+          </div>
+          <br></br>
+          <Button
+            onClick={handleSaveStore}
+            disabled={saving}
+            className="w-full sm:w-auto"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                저장 중...
+              </>
+            ) : (
+              '저장하기'
+            )}
+          </Button>
+        </div>
+      </div>
 
       {/* Employee Management */}
-      <Card className="border-[var(--border)] shadow-sm bg-white">
-        <CardHeader className="bg-white border-b border-[var(--border)]">
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-[var(--foreground)] flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                직원 관리
-              </CardTitle>
-              <CardDescription>직원 정보를 업데이트하고 연락처를 최신으로 유지해 주세요.</CardDescription>
-            </div>
+      <div className="py-6 border-b" style={{ borderColor: '#3182f6', marginLeft: '1.5px' }}>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <Users className="w-5 h-5" />
+              직원 관리
+            </h3>
+            <p className="text-sm text-gray-600 mt-1">직원 정보를 업데이트하고 연락처를 최신으로 유지해 주세요.</p>
+          </div>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button>
@@ -401,144 +401,139 @@ export function SettingsTab() {
                 </div>
               </DialogContent>
             </Dialog>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="border border-[var(--border)] rounded-2xl overflow-hidden bg-white shadow-lg">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-gray-50 hover:bg-gray-50">
-                  <TableHead className="pl-6 text-center">이름</TableHead>
-                  <TableHead className="text-center">직책</TableHead>
-                  <TableHead className="text-center">전화번호</TableHead>
-                  <TableHead className="text-center">상태</TableHead>
-                  <TableHead className="text-center">입사일</TableHead>
-                  <TableHead className="text-center">관리</TableHead>
+        </div>
+        <div className="border border-gray-200 rounded-2xl overflow-hidden bg-white">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-gray-50 hover:bg-gray-50">
+                <TableHead className="pl-6 text-center">이름</TableHead>
+                <TableHead className="text-center">직책</TableHead>
+                <TableHead className="text-center">전화번호</TableHead>
+                <TableHead className="text-center">상태</TableHead>
+                <TableHead className="text-center">입사일</TableHead>
+                <TableHead className="text-center">관리</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-700" />
+                    <p className="text-gray-600 mt-2">직원 목록을 불러오는 중이에요…</p>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8">
-                      <Loader2 className="w-6 h-6 animate-spin mx-auto text-gray-700" />
-                      <p className="text-gray-600 mt-2">직원 목록을 불러오는 중이에요…</p>
+              ) : employees.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-gray-500">
+                    등록된 직원이 아직 없어요.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                employees.map((employee) => (
+                  <TableRow key={employee.id} className="hover:bg-gray-50/50" style={{ borderRadius: '16px', overflow: 'hidden' }}>
+                    <TableCell className="pl-6 text-center">{employee.name}</TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="outline" className="border-gray-300 text-gray-800">
+                        {employee.role}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-600 text-center">{employee.phone}</TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant={employee.status === 'active' ? 'secondary' : 'default'}>
+                        {employee.status === 'active' ? '활동' : '휴직'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-600 text-center">{employee.join_date}</TableCell>
+                    <TableCell className="text-center">
+                      <div className="flex gap-2 justify-center">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-gray-700 hover:text-gray-800 hover:bg-gray-50"
+                          onClick={() => handleEditEmployee(employee)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => handleDeleteEmployee(employee.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
-                ) : employees.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                      등록된 직원이 아직 없어요.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  employees.map((employee) => (
-                    <TableRow key={employee.id} className="hover:bg-gray-50/50" style={{ borderRadius: '16px', overflow: 'hidden' }}>
-                      <TableCell className="pl-6 text-center">{employee.name}</TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="border-gray-300 text-gray-800">
-                          {employee.role}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-gray-600 text-center">{employee.phone}</TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant={employee.status === 'active' ? 'secondary' : 'default'}>
-                          {employee.status === 'active' ? '활동' : '휴직'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-gray-600 text-center">{employee.join_date}</TableCell>
-                      <TableCell className="text-center">
-                        <div className="flex gap-2 justify-center">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-gray-700 hover:text-gray-800 hover:bg-gray-50"
-                            onClick={() => handleEditEmployee(employee)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={() => handleDeleteEmployee(employee.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
 
       {/* Notification Settings */}
-      <Card className="border-[var(--border)] shadow-sm bg-white">
-        <CardHeader className="bg-white border-b border-[var(--border)]">
-          <CardTitle className="text-[var(--foreground)] flex items-center gap-2">
+      <div className="pt-6" style={{ marginLeft: '1.5px' }}>
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <Bell className="w-5 h-5" />
             알림 설정
-          </CardTitle>
-          <CardDescription>꼭 필요한 순간에만 알림을 받아 보세요.</CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6">
-          {loading ? (
-            <div className="text-center py-8">
-              <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#3182F6]" />
-              <p className="text-gray-600 mt-2">알림 설정을 불러오는 중이에요…</p>
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">꼭 필요한 순간에만 알림을 받아 보세요.</p>
+        </div>
+        {loading ? (
+          <div className="text-center py-8">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto text-[#3182F6]" />
+            <p className="text-gray-600 mt-2">알림 설정을 불러오는 중이에요…</p>
+          </div>
+        ) : notifications ? (
+          <div className="space-y-4 max-w-2xl">
+            <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+              <div className="flex-1">
+                <p className="text-gray-800">재고 부족 알림</p>
+                <p className="text-gray-600 text-sm">재고가 최소 수량 아래로 내려가면 바로 알려드릴게요.</p>
+              </div>
+              <Switch
+                checked={notifications.low_stock}
+                onCheckedChange={(checked) => handleNotificationChange('low_stock', checked)}
+              />
             </div>
-          ) : notifications ? (
-            <div className="space-y-4 max-w-2xl">
-              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
-                <div className="flex-1">
-                  <p className="text-gray-800">재고 부족 알림</p>
-                  <p className="text-gray-600 text-sm">재고가 최소 수량 아래로 내려가면 바로 알려드릴게요.</p>
-                </div>
-                <Switch
-                  checked={notifications.low_stock}
-                  onCheckedChange={(checked) => handleNotificationChange('low_stock', checked)}
-                />
+            <Separator />
+            <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+              <div className="flex-1">
+                <p className="text-gray-800">품절 알림</p>
+                <p className="text-gray-600 text-sm">상품이 품절되면 즉시 알려드릴게요.</p>
               </div>
-              <Separator />
-              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
-                <div className="flex-1">
-                  <p className="text-gray-800">품절 알림</p>
-                  <p className="text-gray-600 text-sm">상품이 품절되면 즉시 알려드릴게요.</p>
-                </div>
-                <Switch
-                  checked={notifications.out_of_stock}
-                  onCheckedChange={(checked) => handleNotificationChange('out_of_stock', checked)}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
-                <div className="flex-1">
-                  <p className="text-gray-800">발주 알림</p>
-                  <p className="text-gray-600 text-sm">자동 발주 추천 시점이 되면 알려드릴게요.</p>
-                </div>
-                <Switch
-                  checked={notifications.order_reminder}
-                  onCheckedChange={(checked) => handleNotificationChange('order_reminder', checked)}
-                />
-              </div>
-              <Separator />
-              <div className="flex items-center justify-end pt-3 pb-3 gap-7">
-                <div className="flex-1">
-                  <p className="text-gray-800">일일 리포트</p>
-                  <p className="text-gray-600 text-sm">매일 재고 현황 리포트를 보내드릴게요.</p>
-                </div>
-                <Switch
-                  checked={notifications.daily_report}
-                  onCheckedChange={(checked) => handleNotificationChange('daily_report', checked)}
-                />
-              </div>
+              <Switch
+                checked={notifications.out_of_stock}
+                onCheckedChange={(checked) => handleNotificationChange('out_of_stock', checked)}
+              />
             </div>
-          ) : null}
-        </CardContent>
-      </Card>
+            <Separator />
+            <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+              <div className="flex-1">
+                <p className="text-gray-800">발주 알림</p>
+                <p className="text-gray-600 text-sm">자동 발주 추천 시점이 되면 알려드릴게요.</p>
+              </div>
+              <Switch
+                checked={notifications.order_reminder}
+                onCheckedChange={(checked) => handleNotificationChange('order_reminder', checked)}
+              />
+            </div>
+            <Separator />
+            <div className="flex items-center justify-end pt-3 pb-3 gap-7">
+              <div className="flex-1">
+                <p className="text-gray-800">일일 리포트</p>
+                <p className="text-gray-600 text-sm">매일 재고 현황 리포트를 보내드릴게요.</p>
+              </div>
+              <Switch
+                checked={notifications.daily_report}
+                onCheckedChange={(checked) => handleNotificationChange('daily_report', checked)}
+              />
+            </div>
+          </div>
+        ) : null}
+      </div>
           </div>
         </div>
       </div>

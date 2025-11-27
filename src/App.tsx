@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
-import { Package, TrendingUp, AlertTriangle, Settings } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, Settings, Utensils } from 'lucide-react';
 import { InventoryTab } from './components/InventoryTab';
 import { OrderRecommendationTab } from './components/OrderRecommendationTab';
 import { OutOfStockTab } from './components/OutOfStockTab';
 import { SettingsTab } from './components/SettingsTab';
+import { MenuTab } from './components/MenuTab';
 import { Toaster } from './components/ui/sonner';
 
 export default function App() {
@@ -46,6 +47,30 @@ export default function App() {
                 <Package className="w-5 h-5" />
                 <span className="hidden sm:inline">재고 관리</span>
                 <span className="sm:hidden">재고</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="menu" 
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-full transition-all duration-200 font-medium"
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 600,
+                  color: activeTab === 'menu' ? '#ffffff' : '#3182f6',
+                  backgroundColor: activeTab === 'menu' ? '#3182f6' : '#eff6ff'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#3182f6';
+                  e.currentTarget.style.color = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== 'menu') {
+                    e.currentTarget.style.backgroundColor = '#eff6ff';
+                    e.currentTarget.style.color = '#3182f6';
+                  }
+                }}
+              >
+                <Utensils className="w-5 h-5" />
+                <span className="hidden sm:inline">메뉴 관리</span>
+                <span className="sm:hidden">메뉴</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="order" 
@@ -125,15 +150,15 @@ export default function App() {
               <TabsContent value="inventory" className="m-0">
                 <InventoryTab />
               </TabsContent>
-              
+              <TabsContent value="menu" className="m-0">
+                <MenuTab />
+              </TabsContent>
               <TabsContent value="order" className="m-0">
                 <OrderRecommendationTab />
               </TabsContent>
-              
               <TabsContent value="outofstock" className="m-0">
                 <OutOfStockTab />
               </TabsContent>
-              
               <TabsContent value="settings" className="m-0">
                 <SettingsTab />
               </TabsContent>

@@ -62,6 +62,29 @@ class ApiClient {
     });
   }
 
+  async postFile<T>(endpoint: string, file: File): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error(`API Error [${endpoint}]:`, error);
+      throw error;
+    }
+  }
+
   async put<T>(endpoint: string, data?: unknown): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
@@ -181,8 +204,10 @@ export interface OutOfStockItem {
 
 export const outOfStockApi = {
   getAll: () => api.get<OutOfStockItem[]>('/out-of-stock'),
-  restock: (itemId: number, quantity: number) => 
-    api.post(`/out-of-stock/${itemId}/restock?quantity=${quantity}`, {}),
+  restock: (itemId: number, quantity: number) => {
+    // 쿼리 파라미터로 quantity 전달 (body 없음)
+    return api.post<{ message: string; item: InventoryItem }>(`/out-of-stock/${itemId}/restock?quantity=${quantity}`);
+  },
 };
 
 export interface Employee {
@@ -256,5 +281,36 @@ export const storeApi = {
   getNotifications: () => api.get<NotificationSettings>('/store/notifications'),
   updateNotifications: (data: NotificationSettingsUpdate) => 
     api.put<NotificationSettings>('/store/notifications', data),
+};
+
+export interface MenuItem {
+  id: number;
+  name: string;
+  category: string;
+  quantity: number;
+  min_quantity: number;
+  unit: string;
+  price: number;
+  status: 'sufficient' | 'low' | 'out_of_stock';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MenuUploadResponse {
+  success: boolean;
+  message: string;
+  items_created: number;
+  items_updated: number;
+  errors?: string[];
+}
+
+export const menuApi = {
+  getAll: (search?: string, category?: string) => {
+    const params: Record<string, string> = {};
+    if (search) params.search = search;
+    if (category) params.category = category;
+    return api.get<MenuItem[]>('/menus', params);
+  },
+  uploadCsv: (file: File) => api.postFile<MenuUploadResponse>('/menus/upload', file),
 };
 

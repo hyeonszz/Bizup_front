@@ -222,7 +222,7 @@ export function SettingsTab() {
         <div className="bg-white rounded-xl border border-gray-200 flex-1" style={{ minHeight: 'calc(100vh - 200px)', marginTop: '2px' }}>
           <div className="p-6">
       {/* Store Settings */}
-      <div className="pb-6 border-b" style={{ borderColor: '#3182f6', marginLeft: '1.5px' }}>
+      <div className="pb-6 border-b" style={{ borderColor: '#c7d7ff', marginLeft: '1.5px' }}>
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
             <StoreIcon className="w-5 h-5" />
@@ -280,7 +280,7 @@ export function SettingsTab() {
       </div>
 
       {/* Employee Management */}
-      <div className="py-6 border-b" style={{ borderColor: '#3182f6', marginLeft: '1.5px' }}>
+      <div className="py-6 border-b" style={{ borderColor: '#c7d7ff', marginLeft: '1.5px' }}>
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -487,7 +487,7 @@ export function SettingsTab() {
             <p className="text-gray-600 mt-2">알림 설정을 불러오는 중이에요…</p>
           </div>
         ) : notifications ? (
-          <div className="space-y-4 max-w-2xl">
+          <div className="space-y-4 max-w-2xl" style={{ marginTop: '5px' }}>
             <div className="flex items-center justify-end pt-3 pb-3 gap-7">
               <div className="flex-1">
                 <p className="text-gray-800">재고 부족 알림</p>

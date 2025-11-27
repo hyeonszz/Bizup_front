@@ -139,28 +139,14 @@ export function OrderRecommendationTab() {
           ) : (
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-100" style={{ height: '50px' }}>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    상품명
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    현재 재고
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    평균 사용
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    추천 발주
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    예상 비용
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    우선순위
-                  </th>
-                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] md:text-[16px] lg:text-[19px]">
-                    예상 소진
-                  </th>
+                <tr className="border-b border-gray-100 bg-[#f9fafb]" style={{ height: '50px' }}>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">상품명</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">현재 재고</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">평균 사용</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">추천 발주</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">예상 비용</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">우선순위</th>
+                  <th className="text-center px-6 text-gray-600 font-medium whitespace-nowrap text-[19px] bg-[#f9fafb]">예상 소진</th>
                 </tr>
               </thead>
               <tbody>
@@ -175,23 +161,23 @@ export function OrderRecommendationTab() {
                         }`}
                         onClick={() => toggleItem(item.id)}
                       >
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">{item.name}</td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-900 bg-[#f9fafb]">{item.name}</td>
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-900 bg-[#f9fafb]">
                           {item.current_stock} {item.unit}
                         </td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-600">
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-600 bg-[#f9fafb]">
                           {item.avg_daily} {item.unit}/일
                         </td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-900 bg-[#f9fafb]">
                           {item.recommended_qty} {item.unit}
                         </td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-900 bg-[#f9fafb]">
                           {item.estimated_cost.toLocaleString()}원
                         </td>
-                        <td className="px-6 py-4 text-center">
+                        <td className="px-6 py-6 text-center bg-[#f9fafb]">
                           {getPriorityBadge(item.priority)}
                         </td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-600">
+                        <td className="px-6 py-6 text-center text-[15px] text-gray-600 bg-[#f9fafb]">
                           <span className={daysLeft <= 2 ? 'text-red-600' : 'text-gray-600'}>
                             약 {daysLeft}일
                           </span>

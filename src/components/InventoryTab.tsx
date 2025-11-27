@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -8,6 +8,9 @@ import { toast } from 'sonner';
 
 export function InventoryTab() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedInventoryCategory, setSelectedInventoryCategory] = useState('');
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingItemId, setEditingItemId] = useState<number | null>(null);
@@ -16,11 +19,15 @@ export function InventoryTab() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(false);
+  const inventoryCategories = Array.from(new Set(inventory.map(i => i.category))).sort();
+  const [maxCategoryWidth, setMaxCategoryWidth] = useState<number>(180); // fallback width
+  const measureRef = useRef<HTMLSpanElement>(null);
 
   const [newItem, setNewItem] = useState({
     name: '',
     category: '',
     quantity: '',
+    unit: '',
     minQuantity: '',
     price: '',
   });
@@ -29,6 +36,7 @@ export function InventoryTab() {
     name: '',
     category: '',
     quantity: '',
+    unit: '',
     minQuantity: '',
     price: '',
   });
@@ -49,15 +57,39 @@ export function InventoryTab() {
   // 다이얼로그 열림 시 폼 데이터 초기화
   useEffect(() => {
     if (!isDialogOpen) {
-      setNewItem({ name: '', category: '', quantity: '', minQuantity: '', price: '' });
+      setNewItem({ name: '', category: '', quantity: '', unit: '', minQuantity: '', price: '' });
     }
   }, [isDialogOpen]);
 
   useEffect(() => {
     if (!isEditDialogOpen && editingItemId === null) {
-      setEditItem({ name: '', category: '', quantity: '', minQuantity: '', price: '' });
+      setEditItem({ name: '', category: '', quantity: '', unit: '', minQuantity: '', price: '' });
     }
   }, [isEditDialogOpen, editingItemId]);
+
+  // useEffect로 외부 클릭 이벤트 핸들러 추가
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (showCategoryDropdown && dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowCategoryDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showCategoryDropdown]);
+
+  // useEffect로 가장 긴 카테고리 width 재기
+  useEffect(() => {
+    const ctx = document.createElement('canvas').getContext('2d');
+    if (!ctx) return;
+    ctx.font = '20px Noto Sans KR, sans-serif';
+    const testItems = [
+      '전체 카테고리',
+      ...inventoryCategories,
+    ];
+    const maxW = testItems.reduce((prev, txt) => Math.max(prev, ctx.measureText(txt).width), 0);
+    setMaxCategoryWidth(Math.ceil(maxW) + 48); // 좌우 padding 여유 48px
+  }, [inventoryCategories.length, inventoryCategories.join(',')]);
 
   const loadInventory = async () => {
     try {
@@ -81,10 +113,15 @@ export function InventoryTab() {
     }
   };
 
+  // 상품명/카테고리/카테고리필터 동시 적용 필터
   const filteredInventory = inventory.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    (item) => {
+      const matchesSearch =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !selectedInventoryCategory || item.category === selectedInventoryCategory;
+      return matchesSearch && matchesCategory;
+    }
   );
 
   const handleAddItem = async (e: React.FormEvent) => {
@@ -100,12 +137,12 @@ export function InventoryTab() {
         name: newItem.name,
         category: newItem.category,
         quantity: parseInt(newItem.quantity) || 0,
-        unit: '',
+        unit: newItem.unit || '',
         min_quantity: parseInt(newItem.minQuantity) || 0,
         price: parseInt(newItem.price) || 0,
       });
       toast.success('새 재고를 추가했어요.');
-      setNewItem({ name: '', category: '', quantity: '', minQuantity: '', price: '' });
+      setNewItem({ name: '', category: '', quantity: '', unit: '', minQuantity: '', price: '' });
       setIsDialogOpen(false);
       loadInventory();
       loadStats();
@@ -123,6 +160,7 @@ export function InventoryTab() {
       name: item.name,
       category: item.category,
       quantity: item.quantity.toString(),
+      unit: item.unit || '',
       minQuantity: item.min_quantity.toString(),
       price: item.price.toString(),
     });
@@ -143,13 +181,14 @@ export function InventoryTab() {
         name: editItem.name,
         category: editItem.category,
         quantity: parseInt(editItem.quantity) || 0,
+        unit: editItem.unit || '',
         min_quantity: parseInt(editItem.minQuantity) || 0,
         price: parseInt(editItem.price) || 0,
       });
       toast.success('재고 정보를 업데이트했어요.');
       setIsEditDialogOpen(false);
       setEditingItemId(null);
-      setEditItem({ name: '', category: '', quantity: '', minQuantity: '', price: '' });
+      setEditItem({ name: '', category: '', quantity: '', unit: '', minQuantity: '', price: '' });
       loadInventory();
       loadStats();
     } catch (error) {
@@ -213,16 +252,93 @@ export function InventoryTab() {
         <div className="bg-white rounded-xl border border-gray-200 flex-1" style={{ minHeight: 'calc(100vh - 200px)', marginTop: '2px' }} >
         {/* Search */}
         <div className="p-6 border-b border-gray-100">
-          <div className="relative">
-            <Search className="absolute top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" strokeWidth={1.5} style={{ left: '19px' }} />
-            <Input
-              type="text"
-              placeholder="상품명 또는 카테고리를 검색해 주세요."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="rounded-lg border-gray-300 bg-white"
-              style={{ height: '60px', fontSize: '20px', paddingLeft: '63px' }}
-            />
+          <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex-1 relative">
+              <Search className="absolute" strokeWidth={1.5} style={{ top: '50%', left: '19px', transform: 'translateY(-50%)', position: 'absolute' }} />
+              <Input
+                type="text"
+                placeholder="상품명 또는 카테고리를 검색해 주세요."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="rounded-lg border-gray-300 bg-white placeholder:text-[#0a0a0a]"
+                style={{ height: '60px', fontSize: '20px', color: '#0a0a0a', paddingLeft: '63px' }}
+              />
+            </div>
+            <div className="sm:w-48" style={{ position: 'relative', width: maxCategoryWidth }} ref={dropdownRef}>
+              <button
+                type="button"
+                aria-label="카테고리 선택"
+                className="flex items-center justify-between w-full h-[60px] px-4 rounded-lg border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-100"
+                style={{ fontSize: '16px', lineHeight: '59px', paddingTop: 0, paddingBottom: 0, paddingRight: '32px', color: '#0a0a0a', width: maxCategoryWidth, whiteSpace: 'nowrap' }}
+                onClick={() => setShowCategoryDropdown(v => !v)}
+              >
+                <span style={{ color: '#0a0a0a', fontSize: '16px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
+                  {selectedInventoryCategory === '' ? '전체 카테고리' : selectedInventoryCategory}
+                </span>
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="#6b7280"
+                  strokeWidth={2.2}
+                  style={{ marginLeft: '4px', width: 18, height: 18 }}
+                  focusable="false"
+                  aria-hidden="true"
+                >
+                  <path d="M6 8l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              {showCategoryDropdown && (
+                <ul style={{
+                  position: 'absolute',
+                  zIndex: 30,
+                  width: maxCategoryWidth,
+                  marginTop: '3px',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 24px 4px #00000011',
+                  background: '#fff',
+                  border: '1px solid #ecf0f1',
+                  maxHeight: 290,
+                  overflowY: 'auto',
+                  padding: '7px 0'
+                }}>
+                  <li
+                    style={{
+                      color: '#0a0a0a',
+                      fontSize: '16px',
+                      padding: '13px 19px',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      background: selectedInventoryCategory === '' ? '#f1f7ff' : 'transparent',
+                      fontWeight: selectedInventoryCategory === '' ? 600 : 400
+                    }}
+                    onClick={() => { setSelectedInventoryCategory(''); setShowCategoryDropdown(false); }}
+                  >
+                    전체 카테고리
+                  </li>
+                  {inventoryCategories.map((category) => (
+                    <li
+                      key={category}
+                      style={{
+                        padding: '13px 19px',
+                        fontSize: 16,
+                        color: '#363a49',
+                        cursor: 'pointer',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        background: selectedInventoryCategory === category ? '#f1f7ff' : 'transparent',
+                        fontWeight: selectedInventoryCategory === category ? 600 : 400
+                      }}
+                      onClick={() => { setSelectedInventoryCategory(category); setShowCategoryDropdown(false); }}
+                    >
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         </div>
 
@@ -313,8 +429,12 @@ export function InventoryTab() {
                       >
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">{item.name}</td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-600">{item.category}</td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">{item.quantity}</td>
-                        <td className="px-6 py-4 text-center text-[15px] text-gray-600">{item.min_quantity}</td>
+                        <td className="px-6 py-4 text-center text-[15px] text-gray-900">
+                          {item.quantity} {item.unit || ''}
+                        </td>
+                        <td className="px-6 py-4 text-center text-[15px] text-gray-600">
+                          {item.min_quantity} {item.unit || ''}
+                        </td>
                         <td className="px-6 py-4 text-center text-[15px] text-gray-900">
                           ₩{item.price.toLocaleString()}
                         </td>
@@ -421,6 +541,16 @@ export function InventoryTab() {
               </div>
             </div>
             <div className="space-y-2">
+              <Label htmlFor="unit" className="text-[14px] text-gray-600">재고단위</Label>
+              <Input
+                id="unit"
+                value={newItem.unit}
+                onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
+                placeholder="예: 개, 박스, kg"
+                className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="price" className="text-[14px] text-gray-600">가격 (₩)</Label>
               <Input
                 id="price"
@@ -518,6 +648,16 @@ export function InventoryTab() {
                   className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
                 />
               </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="editUnit" className="text-[14px] text-gray-600">재고단위</Label>
+              <Input
+                id="editUnit"
+                value={editItem.unit}
+                onChange={(e) => setEditItem({ ...editItem, unit: e.target.value })}
+                placeholder="예: 개, 박스, kg"
+                className="h-11 rounded-lg border-gray-200 bg-gray-50 text-[15px]"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="editPrice" className="text-[14px] text-gray-600">가격 (₩)</Label>
